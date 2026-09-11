@@ -14,27 +14,9 @@ from openpyxl import load_workbook
 from datetime import datetime
 from docxtpl import DocxTemplate,InlineImage
 from docx.shared import Mm,Inches
-from jinja2 import Environment
+
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
-def money_filter(value, fmt="#,##0.00"):
-    """
-    Jinja2 filter：把数字格式化成指定格式的字符串。
-    用法：{{ 金额 | money }}                → 1,233,454.00
-          {{ 金额 | money('#,##0') }}       → 1,233,454
-          {{ 金额 | money('¥#,##0.00') }}   → ¥1,233,454.00
-          {{ 金额 | money('0.00%') }}       → 12.34%
-    """
-    if value is None or value == "":
-        return ""
-    if isinstance(value, str):
-        return value          # 字符串不动
-    if isinstance(value, bool):
-        return value
-    try:
-        return f"{value:{fmt}}"
-    except Exception:
-        return str(value)
 
 class excel2word():
     def __init__(self, DATE_FORMAT='%Y年%m月%d日', input_DIR_NAME='', OUTPUT_DIR_NAME='output', Image_DIR_NAME='img'):
@@ -170,9 +152,6 @@ class excel2word():
 
         # 获取数据行（从第二行开始）
         rows = list(ws.iter_rows(min_row=2, values_only=False))
-        # 在 for 循环之前，只建一次 env
-        jinja_env = Environment()
-        jinja_env.filters['money'] = money_filter
 
         count = 0
         for idx, row in enumerate(rows, start=2):
@@ -189,7 +168,7 @@ class excel2word():
                     cell = row[i]
                     data[header] = self.format_cell_value(cell, doc)
 
-            doc.render(data, jinja_env)
+            doc.render(data)
 
             custom_title = data.get(self.find_key_containing(data, '文件标题'), '').strip()
             if custom_title:
@@ -236,8 +215,8 @@ class excel2word():
 
 if __name__ == '__main__':
     print(f'----【{datetime.now()}】开始运行。----')
-    c = excel2word(input_DIR_NAME=r'D:\AppData\xwechat_files\wxid_vcnil19ggaqm22_0bf8\msg\file\2026-09')
-    # c.main(excelName='数据源.xlsx',wordName='模板.docx')
+    # c = excel2word(input_DIR_NAME='data')
+    # c.main(excelName='人事令数据源.xlsx',wordName='中土党干模板.docx')
 
-    # c = excel2word(input_DIR_NAME='')
+    c = excel2word(input_DIR_NAME='')
     c.main()
