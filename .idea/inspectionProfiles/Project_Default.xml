@@ -1,0 +1,149 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="HttpUrlsUsage" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredUrls">
+        <list>
+          <option value="http://localhost" />
+          <option value="http://127.0.0.1" />
+          <option value="http://0.0.0.0" />
+          <option value="http://www.w3.org/" />
+          <option value="http://json-schema.org/draft" />
+          <option value="http://java.sun.com/" />
+          <option value="http://xmlns.jcp.org/" />
+          <option value="http://javafx.com/javafx/" />
+          <option value="http://javafx.com/fxml" />
+          <option value="http://maven.apache.org/xsd/" />
+          <option value="http://maven.apache.org/POM/" />
+          <option value="http://www.springframework.org/schema/" />
+          <option value="http://www.springframework.org/tags" />
+          <option value="http://www.springframework.org/security/tags" />
+          <option value="http://www.thymeleaf.org" />
+          <option value="http://www.jboss.org/j2ee/schema/" />
+          <option value="http://www.jboss.com/xml/ns/" />
+          <option value="http://www.ibm.com/webservices/xsd" />
+          <option value="http://activemq.apache.org/schema/" />
+          <option value="http://schema.cloudfoundry.org/spring/" />
+          <option value="http://schemas.xmlsoap.org/" />
+          <option value="http://cxf.apache.org/schemas/" />
+          <option value="http://primefaces.org/ui" />
+          <option value="http://tiles.apache.org/" />
+          <option value="http://zw.hainan.gov.cn" />
+          <option value="http://192.168.1.197" />
+          <option value="http://192.168.1.160" />
+          <option value="http://192.168.1.199" />
+          <option value="http://www.symtc.com" />
+          <option value="http://192.168.1.213" />
+          <option value="http://192.168.1.241" />
+          <option value="http://www.gyggzyjy.cn" />
+          <option value="http://192.168.1.223" />
+          <option value="http://dspace.cc.tut.fi" />
+          <option value="http://192.168.1.198" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="LanguageDetectionInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="49">
+            <item index="0" class="java.lang.String" itemvalue="html2text" />
+            <item index="1" class="java.lang.String" itemvalue="requests" />
+            <item index="2" class="java.lang.String" itemvalue="numpy" />
+            <item index="3" class="java.lang.String" itemvalue="fastapi" />
+            <item index="4" class="java.lang.String" itemvalue="starlette" />
+            <item index="5" class="java.lang.String" itemvalue="scikit_learn" />
+            <item index="6" class="java.lang.String" itemvalue="uvicorn" />
+            <item index="7" class="java.lang.String" itemvalue="pandas" />
+            <item index="8" class="java.lang.String" itemvalue="beautifulsoup4" />
+            <item index="9" class="java.lang.String" itemvalue="timeout-decorator" />
+            <item index="10" class="java.lang.String" itemvalue="elasticsearch" />
+            <item index="11" class="java.lang.String" itemvalue="lxml" />
+            <item index="12" class="java.lang.String" itemvalue="PyMySQL" />
+            <item index="13" class="java.lang.String" itemvalue="chardet" />
+            <item index="14" class="java.lang.String" itemvalue="certifi" />
+            <item index="15" class="java.lang.String" itemvalue="python-snappy" />
+            <item index="16" class="java.lang.String" itemvalue="urllib3" />
+            <item index="17" class="java.lang.String" itemvalue="idna" />
+            <item index="18" class="java.lang.String" itemvalue="six" />
+            <item index="19" class="java.lang.String" itemvalue="typing_extensions" />
+            <item index="20" class="java.lang.String" itemvalue="hanlp" />
+            <item index="21" class="java.lang.String" itemvalue="SQLAlchemy" />
+            <item index="22" class="java.lang.String" itemvalue="hanlp-trie" />
+            <item index="23" class="java.lang.String" itemvalue="python-docx" />
+            <item index="24" class="java.lang.String" itemvalue="PyQt5" />
+            <item index="25" class="java.lang.String" itemvalue="protobuf" />
+            <item index="26" class="java.lang.String" itemvalue="sacremoses" />
+            <item index="27" class="java.lang.String" itemvalue="huggingface-hub" />
+            <item index="28" class="java.lang.String" itemvalue="cffi" />
+            <item index="29" class="java.lang.String" itemvalue="cryptography" />
+            <item index="30" class="java.lang.String" itemvalue="dateparser" />
+            <item index="31" class="java.lang.String" itemvalue="pybind11" />
+            <item index="32" class="java.lang.String" itemvalue="filelock" />
+            <item index="33" class="java.lang.String" itemvalue="pdfplumber" />
+            <item index="34" class="java.lang.String" itemvalue="tensorboard-plugin-wit" />
+            <item index="35" class="java.lang.String" itemvalue="fasttext-wheel" />
+            <item index="36" class="java.lang.String" itemvalue="xlrd" />
+            <item index="37" class="java.lang.String" itemvalue="apscheduler" />
+            <item index="38" class="java.lang.String" itemvalue="PyPDF2" />
+            <item index="39" class="java.lang.String" itemvalue="docx" />
+            <item index="40" class="java.lang.String" itemvalue="bs4" />
+            <item index="41" class="java.lang.String" itemvalue="pymysql" />
+            <item index="42" class="java.lang.String" itemvalue="sqlalchemy" />
+            <item index="43" class="java.lang.String" itemvalue="pdfminer.six" />
+            <item index="44" class="java.lang.String" itemvalue="clickhouse_driver" />
+            <item index="45" class="java.lang.String" itemvalue="xpinyin" />
+            <item index="46" class="java.lang.String" itemvalue="APScheduler" />
+            <item index="47" class="java.lang.String" itemvalue="kafka-python" />
+            <item index="48" class="java.lang.String" itemvalue="openpyxl" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="E501" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N803" />
+          <option value="N806" />
+          <option value="N802" />
+          <option value="N813" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PySimplifyBooleanCheckInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="str.replace" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="RAssignmentInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RBooleanExpressionSimplifier" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RCompareToNaInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RDeprecatedDoubleStarts" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RDeprecatedSetClassArgsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RDplyrBooleanOperatorInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RDplyrCallToPipeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RInstanceOfVirtualS4ClassInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RMarkdownRequirements" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RMissingPackage" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RPasteToPaste0Inspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RRedundantConcatenationInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RRedundantSemicolonInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RStudioAPISourceMarkerInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RTripleColonToDoubleColonInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RUnresolvedReference" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RUnsafeSequenceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RUnusedParameter" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RUnusedVariable" enabled="false" level="WARNING" enabled_by_default="false" />
+  </profile>
+</component>
