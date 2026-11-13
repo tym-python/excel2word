@@ -170,7 +170,12 @@ class excel2wordSt:
                             else:
                                 output_dir = os.path.abspath(os.path.join(base_dir, raw_path))
                         else:
-                            output_dir = os.path.join(base_dir, "output")
+                            base_dir_norm = os.path.normpath(base_dir)
+                            parent_dir = os.path.dirname(base_dir_norm)
+                            if parent_dir and parent_dir != base_dir_norm:
+                                output_dir = os.path.join(parent_dir, "output")
+                            else:
+                                output_dir = os.path.join(base_dir, "output")
                         os.makedirs(output_dir, exist_ok=True)
 
                         # ---- 上传文件落盘到 base_dir，供 excel2word 读取 ----
@@ -204,12 +209,47 @@ class excel2wordSt:
                                 "generated": generated,
                             }
 
-                except ImportError:
+                # ① 真正的「找不到 excel2word 模块」
+                except ModuleNotFoundError as e:
+                    if (e.name or "") == "excel2word":
+                        script_dir = os.path.dirname(os.path.abspath(__file__))
+                        # 顺带探测一下 import 系统到底在哪些路径下找过 excel2word
+                        tried = [p for p in sys.path if p]
+                        st.session_state.result = {
+                            "error": (
+                                f"未找到 excel2word 模块。\n\n"
+                                f"- 当前入口脚本目录：`{script_dir}`\n"
+                                f"- 请确认 `excel2word.py` 与该入口脚本位于同一目录；\n"
+                                f"- 并确认是用 `streamlit run {os.path.basename(__file__)}` 启动的；\n"
+                                f"- 当前 sys.path 搜索路径：{tried}"
+                            )
+                        }
+                    else:
+                        # ② excel2word.py 找到了，但它内部 import 的第三方库缺失
+                        st.session_state.result = {
+                            "error": (
+                                f"excel2word.py 内部依赖导入失败：缺少第三方模块 `{e.name}`。\n\n"
+                                f"请先安装（例如：`pip install {e.name}`），"
+                                f"然后重启 streamlit 再试。\n\n"
+                                f"原始错误：{e}"
+                            )
+                        }
+
+                # ③ excel2word 模块找到了，但里面没有名为 excel2word 的类/函数
+                except ImportError as e:
                     st.session_state.result = {
-                        "error": "未找到 excel2word 模块，请确认 excel2word.py 与 app.py 位于同一目录。"
+                        "error": (
+                            f"无法从 excel2word 模块中导入名称 `excel2word`：{e}\n\n"
+                            f"请检查 excel2word.py 中是否定义了名为 `excel2word` 的类（或函数），"
+                            f"并注意大小写是否一致。"
+                        )
                     }
+
+                # ④ 其他运行时错误
                 except Exception as e:
-                    st.session_state.result = {"error": f"处理失败：{e}"}
+                    st.session_state.result = {
+                        "error": f"处理失败：{type(e).__name__}: {e}"
+                    }
                 finally:
                     st.session_state.running = False
 
