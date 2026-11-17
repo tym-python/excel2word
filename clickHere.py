@@ -172,6 +172,9 @@ class excel2wordSt:
                 st.session_state.last_run_time = time.time()
                 st.session_state.result = None
 
+                # 记录本次落盘的文件，供 finally 清理
+                uploaded_paths = []
+
                 try:
                     with st.spinner("正在填充数据..."):
                         from excel2word import excel2word
@@ -199,12 +202,14 @@ class excel2wordSt:
 
                         # ---- 上传文件落盘到 base_dir，供 excel2word 读取 ----
                         excel_path = os.path.join(base_dir, excel_file.name)
-                        st.info(excel_path)
                         with open(excel_path, "wb") as f:
                             f.write(excel_file.getbuffer())
+                        uploaded_paths.append(excel_path)
                         if not use_sheet_word:
-                            with open(os.path.join(base_dir, word_file.name), "wb") as f:
+                            word_path = os.path.join(base_dir, word_file.name)
+                            with open(word_path, "wb") as f:
                                 f.write(word_file.getbuffer())
+                            uploaded_paths.append(word_path)
 
                         # ---- 调用 excel2word ----
                         # input_DIR_NAME=''          → 输入 = base_dir（上传文件落地处）
@@ -227,7 +232,6 @@ class excel2wordSt:
                                 excelName=excel_file.name,
                                 wordName=word_file.name,
                             )
-                        # generated = c.main(excelName=excel_file.name, wordName=word_file.name)
 
                         # ---- 收集输出目录内容 ----
                         if generated < 0:
@@ -239,7 +243,7 @@ class excel2wordSt:
                                 "error": None,
                                 "output_dir": output_dir,
                                 "excel_name": excel_file.name,
-                                "word_name": word_file.name if not use_sheet_word else 'Word模板',
+                                "word_name": word_file.name if not use_sheet_word else '/Word模板',
                                 "generated": generated,
                             }
 
@@ -285,6 +289,14 @@ class excel2wordSt:
                         "error": f"处理失败：{type(e).__name__}: {e}"
                     }
                 finally:
+                    # 清理本次落盘的上传文件（不影响 word模板/、output/、img/）
+                    for p in uploaded_paths:
+                        try:
+                            if os.path.exists(p):
+                                os.remove(p)
+                        except Exception as del_err:
+                            # 删除失败不阻断主流程，只在日志里留痕
+                            print(f"[WARN] 清理临时文件失败：{p} → {del_err}")
                     st.session_state.running = False
 
             # ---------------- 结果展示 ----------------
