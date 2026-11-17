@@ -147,30 +147,13 @@ class excel2word():
         else:
             return img_path
 
-    # ============ 主流程 ============
-    def main(self, excelName='data.xlsx', wordName='template.docx'):
-
-        excel_path = os.path.join(self.input_dir, excelName)
-        template_path = os.path.join(self.input_dir, wordName)
-
-        if not os.path.exists(excel_path):
-            st.error(f"[ERROR]：找不到Excel文件 {excel_path}")
-            return
-        if not os.path.exists(template_path):
-            st.error(f"[ERROR]：找不到Word模板 {template_path}")
-            return
-
-        os.makedirs(self.output_dir, exist_ok=True)
-        os.makedirs(self.img_dir, exist_ok=True)
-
-        wb = load_workbook(excel_path, data_only=True)
-        ws = wb.active
-
+    # ============ 单个 sheet 处理（原循环体原样抽出）============
+    def _process_one_sheet(self, ws, template_path):
+        """用 template_path 渲染 ws 的每一行数据，返回生成文档数量。"""
         headers = [cell.value for cell in ws[1] if cell.value is not None]
         if not headers:
-            st.error("[ERROR]：Excel第一行没有列标题")
-            return
-        # print(f"[OK] 检测到列标题：{headers}")
+            st.warning(f"[WARN] sheet「{ws.title}」第一行没有列标题，已跳过")
+            return 0
 
         rows = list(ws.iter_rows(min_row=2, values_only=False))
 
@@ -219,14 +202,77 @@ class excel2word():
                 counter += 1
 
             doc.save(output_path)
-            st.info(f"[OK] 已生成：{output_path}")
+            st.info(f"[OK] [{ws.title}] 已生成：\t{output_path}")
             count += 1
 
-        st.success( f"[DONE] 全部完成！共生成 {count} 个文档。")
-        # print(f"输出目录：{self.output_dir}")
-        wb.close()
-        st.info(f'----【{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}】运行结束。----',)
         return count
+
+    # ============ 主流程 ============
+    def main(self, excelName='data.xlsx', wordName='template.docx',isForSheet:bool=False):
+        """
+        - isForSheet False：原有模式，读取 excelName 的活动 sheet，使用 wordName 作为模板
+        - isForSheet True：遍历该 excelName 的所有 sheet，每个 sheet 在 Excel 同目录下
+                          查找 <sheet名>.docx 作为模板；此时 wordName 被忽略
+        """
+
+        excel_path = os.path.join(self.input_dir, excelName)
+        if not os.path.exists(excel_path):
+            st.error(f"[ERROR]：找不到Excel文件 {excel_path}")
+            return -1
+
+        os.makedirs(self.output_dir, exist_ok=True)
+        os.makedirs(self.img_dir, exist_ok=True)
+
+        base_dir = os.path.normpath(getattr(self, "base_dir", None) or self.input_dir)
+        parent_dir = os.path.dirname(base_dir)
+        if parent_dir and parent_dir != base_dir:  # 非根目录
+            sheet_template_dir = os.path.join(parent_dir, "word模板")
+        else:  # base_dir 是根目录，退回自身
+            sheet_template_dir = os.path.join(base_dir, "word模板")
+
+        #   避免逐 sheet 刷一堆 WARN 后生成 0 个文档
+        if isForSheet and not os.path.isdir(sheet_template_dir):
+            st.error(
+                f"[ERROR]：未找到「word模板」文件夹 {sheet_template_dir}，"
+                f"请先把 <sheet名>.docx 放到该目录下。"
+            )
+            return -1
+
+        wb = load_workbook(excel_path, data_only=True)
+        total = 0
+
+        try:
+            if isForSheet:
+                # ===== sheet 同名模板模式 =====
+                for sheet_name in wb.sheetnames:
+                    ws = wb[sheet_name]
+                    template_path = os.path.join(sheet_template_dir, f"{sheet_name}.docx")
+
+                    if not os.path.exists(template_path):
+                        st.warning(
+                            f"[WARN] sheet【{sheet_name}】缺少同名模板：{template_path}，已跳过"
+                        )
+                        continue
+
+                    cnt = self._process_one_sheet(ws, template_path)
+                    total += cnt
+                    st.info(f"[OK] sheet【{sheet_name}】完成，生成 {cnt} 个文档")
+            else:
+                # ===== 原有单模板模式 =====
+                template_path = os.path.join(self.input_dir, wordName)
+                if not os.path.exists(template_path):
+                    st.error(f"[ERROR]：找不到Word模板 {template_path}")
+                    return -1
+
+                ws = wb.active
+                total = self._process_one_sheet(ws, template_path)
+        finally:
+            wb.close()
+
+        st.success( f"[DONE] 全部完成！共生成 {total} 个文档。")
+        # print(f"输出目录：{self.output_dir}")
+        st.info(f'----【{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}】运行结束。----',)
+        return total
 
 if __name__ == '__main__':
     print(f'----【{datetime.now()}】开始运行。----')

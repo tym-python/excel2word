@@ -89,14 +89,33 @@ class excel2wordSt:
 
                 # ---------- 2. 选择模板 Word ----------
                 st.markdown("**📝 选择模板（Word）**")
-                word_file = st.file_uploader(
-                    "上传 Word",
-                    type=["docx"],
-                    key=f"word_uploader_{round_}",
-                    label_visibility="collapsed",
+
+                use_sheet_word = st.checkbox(
+                    "使用 Word模板 中「sheet 同名」的 Word 作为模板(遍历sheet)",
+                    value=False,
+                    key=f"use_sheet_word_{round_}",
+                    help="勾选后无需上传 Word；程序会为每个 sheet，在 Word模板 中查找同名的 .docx 作为该 sheet 的模板。",
+                    disabled=st.session_state.running,
                 )
-                if word_file is not None:
-                    st.success(f"✅ 已选择：{word_file.name}")
+
+                if use_sheet_word:
+                    st.info(
+                        "📌 已启用「sheet 同名模板」模式：\n\n"
+                        "- 不再需要上传 Word\n"
+                        "- 程序会在 **`generator 的上一级目录/word模板/`** 下，"
+                        "为每个 sheet 查找 `<sheet名>.docx`\n"
+                        "- 例如 sheet 名为 `员工信息`，则使用 `../word模板/员工信息.docx`"
+                    )
+                    word_file = None
+                else:
+                    word_file = st.file_uploader(
+                        "上传 Word",
+                        type=["docx"],
+                        key=f"word_uploader_{round_}",
+                        label_visibility="collapsed",
+                    )
+                    if word_file is not None:
+                        st.success(f"✅ 已选择：{word_file.name}")
 
                 st.divider()
 
@@ -116,7 +135,7 @@ class excel2wordSt:
                 st.divider()
 
                 # ---------- 4. 开始运行按钮 ----------
-                ready = (excel_file is not None) and (word_file is not None)
+                ready = (excel_file is not None) and (use_sheet_word or word_file is not None)
 
                 # 冷却判断：上一次点击在 COOLDOWN_SECONDS 内则按钮不可点
                 in_cooldown = (time.time() - st.session_state.last_run_time) < COOLDOWN_SECONDS
@@ -179,10 +198,13 @@ class excel2wordSt:
                         os.makedirs(output_dir, exist_ok=True)
 
                         # ---- 上传文件落盘到 base_dir，供 excel2word 读取 ----
-                        with open(os.path.join(base_dir, excel_file.name), "wb") as f:
+                        excel_path = os.path.join(base_dir, excel_file.name)
+                        st.info(excel_path)
+                        with open(excel_path, "wb") as f:
                             f.write(excel_file.getbuffer())
-                        with open(os.path.join(base_dir, word_file.name), "wb") as f:
-                            f.write(word_file.getbuffer())
+                        if not use_sheet_word:
+                            with open(os.path.join(base_dir, word_file.name), "wb") as f:
+                                f.write(word_file.getbuffer())
 
                         # ---- 调用 excel2word ----
                         # input_DIR_NAME=''          → 输入 = base_dir（上传文件落地处）
@@ -193,7 +215,19 @@ class excel2wordSt:
                             OUTPUT_DIR_NAME=output_dir,
                             Image_DIR_NAME=os.path.join(base_dir, "img"),
                         )
-                        generated = c.main(excelName=excel_file.name, wordName=word_file.name)
+                        if use_sheet_word:
+                            # ★ 新增：传 excel 完整路径，wordName=None 表示走「sheet 同名」模式
+                            generated = c.main(
+                                excelName=excel_file.name,
+                                wordName=None,
+                                isForSheet=True,
+                            )
+                        else:
+                            generated = c.main(
+                                excelName=excel_file.name,
+                                wordName=word_file.name,
+                            )
+                        # generated = c.main(excelName=excel_file.name, wordName=word_file.name)
 
                         # ---- 收集输出目录内容 ----
                         if generated < 0:
@@ -205,7 +239,7 @@ class excel2wordSt:
                                 "error": None,
                                 "output_dir": output_dir,
                                 "excel_name": excel_file.name,
-                                "word_name": word_file.name,
+                                "word_name": word_file.name if not use_sheet_word else 'Word模板',
                                 "generated": generated,
                             }
 
